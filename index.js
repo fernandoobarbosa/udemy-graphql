@@ -1,10 +1,48 @@
 const { ApolloServer, gql } = require('apollo-server')
 
+const perfis = [
+  {
+    id: 1,
+    nome: 'Administrador'
+  },
+  {
+    id: 2,
+    nome: 'Comum'
+  }
+]
+
+const usuarios = [
+  {
+    id: 1,
+    nome: 'Diego',
+    email: 'diego@email.com',
+    idade: 23
+  },
+
+  {
+    id: 2,
+    nome: 'Gabriel',
+    email: 'gabrielpastel@umail.com',
+    idade: 15
+  },
+  {
+    id: 3,
+    nome: 'Lucas',
+    email: 'lucas@tottehnam.com',
+    idade: 30
+  }
+]
+
 const typeDefs = gql`
   scalar Date
 
+  type Perfil {
+    id: Int!
+    nome: String!
+  }
+
   type Usuario {
-    id: ID!
+    id: Int!
     nome: String!
     email: String!
     idade: Int
@@ -26,6 +64,11 @@ const typeDefs = gql`
     dataAtual: Date
     usuarioLogado: Usuario
     produtoEmDestaque: Produto
+    numerosMegaSena: [Int!]!
+    usuarios: [Usuario]!
+    usuario(id: Int): Usuario
+    perfis: [Perfil]!
+    perfil(id: Int): Perfil
   }
 `
 
@@ -54,7 +97,20 @@ const resolvers = {
       nome: 'Notebook',
       preco: 1299.99,
       desconto: 0.5
-    })
+    }),
+    numerosMegaSena: () =>
+      Array(6)
+        .fill(0)
+        .map((n) => parseInt(Math.random() * 60 + 1))
+        .sort((a, b) => a - b),
+    usuarios: () => usuarios,
+    usuario (_, args) {
+      return usuarios.find((usuario) => usuario.id === args.id)
+    },
+    perfis: () => perfis,
+    perfil (_, args) {
+      return perfis.find((perfil) => perfil.id === args.id)
+    }
   }
 }
 

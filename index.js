@@ -36,9 +36,7 @@ const resolvers = {
     }
   },
   Produto: {
-    precoComDesconto (produto) {
-      return produto.preco * (1 - produto.desconto)
-    }
+    precoComDesconto: (produto) => produto.preco * (1 - produto.desconto)
   },
   Query: {
     ola: () => 'Bem vindo ao mundo GraphQL!',

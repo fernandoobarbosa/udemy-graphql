@@ -1,5 +1,5 @@
-const { ApolloServer, gql } = require('apollo-server')
-
+const { ApolloServer } = require('apollo-server')
+const { importSchema } = require('graphql-import')
 const perfis = [
   {
     id: 1,
@@ -16,66 +16,35 @@ const usuarios = [
     id: 1,
     nome: 'Diego',
     email: 'diego@email.com',
-    idade: 23
+    idade: 23,
+    perfil_id: 1
   },
 
   {
     id: 2,
     nome: 'Gabriel',
     email: 'gabrielpastel@umail.com',
-    idade: 15
+    idade: 15,
+    perfil_id: 1
   },
   {
     id: 3,
     nome: 'Lucas',
     email: 'lucas@tottehnam.com',
-    idade: 30
+    idade: 30,
+    perfil_id: 2
   }
 ]
 
-const typeDefs = gql`
-  scalar Date
-
-  type Perfil {
-    id: Int!
-    nome: String!
-  }
-
-  type Usuario {
-    id: Int!
-    nome: String!
-    email: String!
-    idade: Int
-    salario: Float
-    vip: Boolean
-  }
-
-  type Produto {
-    nome: String!
-    preco: Float!
-    desconto: Float
-    precoComDesconto: Float
-  }
-
-  # Pontos de entrada do nosso servidor
-  type Query {
-    ola: String!
-    horaAtual: String
-    dataAtual: Date
-    usuarioLogado: Usuario
-    produtoEmDestaque: Produto
-    numerosMegaSena: [Int!]!
-    usuarios: [Usuario]!
-    usuario(id: Int): Usuario
-    perfis: [Perfil]!
-    perfil(id: Int): Perfil
-  }
-`
+// const typeDefs = gql``
 
 const resolvers = {
   Usuario: {
     salario (usuario) {
       return usuario.salario_real
+    },
+    perfil (usuario) {
+      return perfis.find((p) => p.id === usuario.perfil_id)
     }
   },
   Produto: {
@@ -91,7 +60,8 @@ const resolvers = {
       email: 'fulano@email.com',
       idade: 32,
       salario_real: 1234.56,
-      vip: true
+      vip: true,
+      perfil_id: 1
     }),
     produtoEmDestaque: () => ({
       nome: 'Notebook',
@@ -115,7 +85,7 @@ const resolvers = {
 }
 
 const server = new ApolloServer({
-  typeDefs,
+  typeDefs: importSchema('./schema/index.graphql'),
   resolvers
 })
 

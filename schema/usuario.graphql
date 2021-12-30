@@ -3,6 +3,12 @@ type Perfil {
   nome: String!
 }
 
+enum Status {
+  ATIVO
+  INATIVO
+  BLOQUEADO
+}
+
 type Usuario {
   id: Int!
   nome: String!
@@ -12,4 +18,5 @@ type Usuario {
   vip: Boolean
   perfil_id: Int
   perfil: Perfil
+  status: Status
 }
